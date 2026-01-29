@@ -83,7 +83,7 @@
       }
 
       async function getAIResponse(userText) {
-        const res = await fetch("https://tickle-tank-ai-server.onrender.com/chat", {
+        const res = await fetch("https://tickle-tank-ai-server.onrender.com", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: userText })
@@ -103,7 +103,7 @@
             const reply = await getAIResponse(text);
             messages.lastChild.textContent = "Tickle Tank AI: " + reply;
           } catch {
-            messages.lastChild.textContent = "Tickle Tank AI: something broke 😭";
+            messages.lastChild.textContent = "Tickle Tank AI: fuck you nigger 😭";
           }
 
           input.value = "";
@@ -113,4 +113,5 @@
   </script>
 </body>
 </html>
+
 
