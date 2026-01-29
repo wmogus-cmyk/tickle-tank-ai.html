@@ -1,37 +1,115 @@
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const input = document.getElementById("input");
-  const messages = document.getElementById("messages");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tickle Tank AI</title>
 
-  function addMessage(text, className) {
-    const msg = document.createElement("div");
-    msg.className = className;
-    msg.textContent = text;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-  }
-
-  async function getAIResponse(userText) {
-    const res = await fetch("https://tickle-tank-ai-server.onrender.com", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userText })
-    });
-
-    const data = await res.json();
-    return data.reply;
-  }
-
-  input.addEventListener("keypress", async (e) => {
-    if (e.key === "Enter" && input.value.trim()) {
-      const text = input.value;
-      addMessage("You: " + text, "user");
-      addMessage("Tickle Tank AI: thinking… 👀", "bot");
-
-      const reply = await getAIResponse(text);
-      messages.lastChild.textContent = "Tickle Tank AI: " + reply;
-      input.value = "";
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      color: #eaeaea;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-  });
-});
-</script>
+
+    .chatbox {
+      width: 360px;
+      background: #151515;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.7);
+    }
+
+    h2 {
+      text-align: center;
+      margin: 0 0 12px 0;
+      font-weight: normal;
+    }
+
+    #messages {
+      height: 260px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+
+    .user {
+      color: #4ade80;
+      margin-bottom: 6px;
+    }
+
+    .bot {
+      color: #60a5fa;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: #1f1f1f;
+      color: #eaeaea;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chatbox">
+    <h2>🤖 Tickle Tank AI</h2>
+    <div id="messages"></div>
+    <input id="input" type="text" placeholder="Say something..." />
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.getElementById("input");
+      const messages = document.getElementById("messages");
+
+      function addMessage(text, className) {
+        const msg = document.createElement("div");
+        msg.className = className;
+        msg.textContent = text;
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      async function getAIResponse(userText) {
+        const res = await fetch("https://tickle-tank-ai-server.onrender.com", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userText })
+        });
+
+        const data = await res.json();
+        return data.reply;
+      }
+
+      input.addEventListener("keypress", async (e) => {
+        if (e.key === "Enter" && input.value.trim()) {
+          const text = input.value;
+          addMessage("You: " + text, "user");
+          addMessage("Tickle Tank AI: thinking… 👀", "bot");
+
+          try {
+            const reply = await getAIResponse(text);
+            messages.lastChild.textContent = "Tickle Tank AI: " + reply;
+          } catch {
+            messages.lastChild.textContent = "Tickle Tank AI: something broke 😭";
+          }
+
+          input.value = "";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
