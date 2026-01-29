@@ -102,8 +102,7 @@
           try {
             const reply = await getAIResponse(text);
             messages.lastChild.textContent = "Tickle Tank AI: " + reply;
-          } catch {
-            messages.lastChild.textContent = "Tickle Tank AI:flip you naggger";
+      
           }
 
           input.value = "";
@@ -113,6 +112,7 @@
   </script>
 </body>
 </html>
+
 
 
 
