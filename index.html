@@ -2,9 +2,6 @@
 const input = document.getElementById("input");
 const messages = document.getElementById("messages");
 
-// Add your OpenAI API key here
-const OPENAI_API_KEY = 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; // 🔥 REPLACE THIS
-
 function addMessage(text, className) {
   const msg = document.createElement("div");
   msg.className = className;
@@ -14,42 +11,25 @@ function addMessage(text, className) {
 }
 
 async function getAIResponse(userText) {
-  try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${OPENAI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "gpt-3.5-turbo",
-        messages: [
-          { role: "system", content: "You are Tickle Tank AI, a Y2K skater chatbot, loud and chaotic, speaking in teen slang." },
-          { role: "user", content: userText }
-        ],
-        max_tokens: 150
-      })
-    });
-    const data = await res.json();
-    return data.choices[0].message.content;
-  } catch (err) {
-    console.error(err);
-    return "Oops, something went wrong 😭";
-  }
+  const res = await fetch("https://tickle-tank-ai-server.onrender.com", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: userText })
+  });
+
+  const data = await res.json();
+  return data.reply;
 }
 
-input.addEventListener("keypress", async function (e) {
-  if (e.key === "Enter" && input.value.trim() !== "") {
+input.addEventListener("keypress", async (e) => {
+  if (e.key === "Enter" && input.value.trim()) {
     const text = input.value;
     addMessage("You: " + text, "user");
-    addMessage("Tickle Tank AI: processing… 👀", "bot");
-    
-    const response = await getAIResponse(text);
-    
-    // Replace last "processing..." with real answer
-    messages.lastChild.textContent = "Tickle Tank AI: " + response;
+    addMessage("Tickle Tank AI: thinking… 👀", "bot");
+
+    const reply = await getAIResponse(text);
+    messages.lastChild.textContent = "Tickle Tank AI: " + reply;
     input.value = "";
   }
 });
 </script>
-
