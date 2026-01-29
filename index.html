@@ -68,50 +68,51 @@
     <div id="messages"></div>
     <input id="input" type="text" placeholder="Say something..." />
   </div>
+<script>
+  const input = document.getElementById("userInput");
+  const button = document.getElementById("sendBtn");
+  const messages = document.getElementById("messages");
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const input = document.getElementById("input");
-      const messages = document.getElementById("messages");
+  button.addEventListener("click", sendMessage);
+  input.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
 
-      function addMessage(text, className) {
-        const msg = document.createElement("div");
-        msg.className = className;
-        msg.textContent = text;
-        messages.appendChild(msg);
-        messages.scrollTop = messages.scrollHeight;
-      }
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text) return;
 
-      async function getAIResponse(userText) {
-        const res = await fetch("https://tickle-tank-ai-server.onrender.com", {
+    messages.innerHTML += `<div><b>You:</b> ${text}</div>`;
+    input.value = "";
+
+    messages.innerHTML += `<div><i>Tickle Tank AI thinking… 👀</i></div>`;
+
+    try {
+      const res = await fetch(
+        "https://tickle-tank-ai-server.onrender.com/chat",
+        {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userText })
-        });
-
-        const data = await res.json();
-        return data.reply;
-      }
-
-      input.addEventListener("keypress", async (e) => {
-        if (e.key === "Enter" && input.value.trim()) {
-          const text = input.value;
-          addMessage("You: " + text, "user");
-          addMessage("Tickle Tank AI: thinking… 👀", "bot");
-
-          try {
-            const reply = await getAIResponse(text);
-            messages.lastChild.textContent = "Tickle Tank AI: " + reply;
-      
-          }
-
-          input.value = "";
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ message: text })
         }
-      });
-    });
-  </script>
+      );
+
+      messages.innerHTML += `<div>Status: ${res.status}</div>`;
+
+      const data = await res.json();
+      messages.innerHTML += `<div><b>Tickle Tank AI:</b> ${data.reply}</div>`;
+
+    } catch (err) {
+      messages.innerHTML += `<div style="color:red;">ERROR: ${err.message}</div>`;
+    }
+  }
+</script>
+
 </body>
 </html>
+
 
 
 
